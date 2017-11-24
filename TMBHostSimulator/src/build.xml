@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="Host Simulator" default="run" basedir=".">
+
+	<property name="src" location="."/>
+
+	<path id="compile.classpath">
+		<fileset dir="${src}/lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<target name="clean" description="Deleting class files">
+		<delete>
+			<fileset dir="." includes="**/*.class"/>
+		</delete>
+	</target>
+
+	<target name="compile" depends="clean" description="Compile Java sources">
+		<javac srcdir="${src}" destdir="${src}">
+			<classpath refid="compile.classpath"/>
+		</javac>
+	</target>
+
+	<target name="run" depends="compile" description="Run the program">
+		<java classname="simulator.HostSimulator" fork="yes">
+			<arg value="5638"/>
+			<classpath>
+				<pathelement location="${src}"/>
+			</classpath>
+			<classpath refid="compile.classpath"/>
+			<jvmarg value="-Xincgc -Xms512M -Xmx512M -Xincgc -XSS:256M"/>
+		</java>
+	</target>
+
+</project>

@@ -1,0 +1,8 @@
+APINAME=api.MPaySimulator
+MAXACTIVE=10
+MINACTIVE=1
+URL=oracle.jdbc.driver.OracleDriver
+DSN=jdbc:oracle:thin:@10.44.66.47:1521:ACMTEST
+USERNAME=MPAYADMIN_DEVL
+PASSWORD=mpayadmin_devl
+TOKEN=SIMULATOR
