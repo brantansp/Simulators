@@ -1,0 +1,884 @@
+// Decompiled by DJ v3.5.5.77 Copyright 2003 Atanas Neshkov  Date: 1/23/2014 2:34:12 PM
+// Home Page : http://members.fortunecity.com/neshkov/dj.html  - Check often for new version!
+// Decompiler options: packimports(3) 
+// Source File Name:   MPaySimulator.java
+
+package api;
+
+import java.io.PrintStream;
+import java.sql.*;
+import java.util.*;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.FastDateFormat;
+import simulator.HostSimulator;
+
+// Referenced classes of package api:
+//            Processor, RequestException, ProcessException, M24Utility, 
+//            M24ISOMethods
+
+public class MPaySimulator
+    implements Processor
+{
+
+    public MPaySimulator()
+    {
+        details = null;
+        type = null;
+    }
+
+    public void clear()
+    {
+        if(resultSet != null)
+        {
+            try
+            {
+                resultSet.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            resultSet = null;
+        }
+        if(statement != null)
+        {
+            try
+            {
+                statement.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            statement = null;
+        }
+    }
+
+    private ResultSet doSelect()
+        throws RequestException, SQLException
+    {
+        if(connection == null)
+        {
+            throw new RequestException("Connection is null");
+        } else
+        {
+            clear();
+            statement = connection.createStatement();
+            System.out.println((new StringBuilder("select query :: ")).append(sqlBuffer.toString()).toString());
+            resultSet = statement.executeQuery(sqlBuffer.toString());
+            return resultSet;
+        }
+    }
+
+    private int doUpdate()
+        throws RequestException, SQLException
+    {
+        if(connection == null)
+        {
+            throw new RequestException("Connection is null");
+        } else
+        {
+            clear();
+            statement = connection.createStatement();
+            int count = statement.executeUpdate(sqlBuffer.toString());
+            System.out.println((new StringBuilder("Query :: ")).append(sqlBuffer).toString());
+            System.out.println((new StringBuilder("UPDATED COUNT :: ")).append(count).toString());
+            return count;
+        }
+    }
+
+    private void fetchCardDetails()
+        throws RequestException, SQLException, ProcessException
+    {
+        if(((String)isoBuffer.get("S-102")).toString().trim().equals("*"))
+            isoBuffer.put("S-102", "317802070054600");
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append((new StringBuilder("SELECT BALANCEAMT, ACCOUNTNO FROM BALANCE WHERE ACCOUNTNO='")).append(((String)isoBuffer.get("S-102")).toString().trim()).append("'").toString());
+        doSelect();
+        String _dbAmount = "0";
+        if(resultSet != null)
+        {
+            if(resultSet.next())
+            {
+                _dbAmount = resultSet.getString("BALANCEAMT");
+                System.out.println((new StringBuilder("Amount :: ")).append(m24Utility.getFormattedAmount(_dbAmount, 2)).toString());
+                isoBuffer.put("P-44", (new StringBuilder("253")).append(StringUtils.leftPad(m24Utility.getFormattedAmount(_dbAmount, 2), 12, '0')).append(StringUtils.leftPad(m24Utility.getFormattedAmount(_dbAmount, 2), 12, '0')).toString());
+                isoBuffer.put("S-102", StringUtils.rightPad(resultSet.getString("ACCOUNTNO"), 28));
+            } else
+            {
+                throw new ProcessException("69");
+            }
+        } else
+        {
+            throw new RequestException("Connection is empty");
+        }
+    }
+
+    public void fetchMiniStatement()
+        throws RequestException, SQLException, ProcessException
+    {
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append("SELECT TYPE, AMOUNT, DETAILS, TXNDATE FROM ");
+        sqlBuffer.append((new StringBuilder("STATEMENT WHERE ROWNUM <= 9 AND ACCOUNTNO='")).append(((String)isoBuffer.get("S-102")).toString().trim()).append("' ORDER BY TXNDATE DESC").toString());
+        doSelect();
+        StringBuffer statementBuffer = new StringBuffer();
+        int length = 0;
+        if(resultSet != null)
+        {
+            System.out.println("tetsetset :: ");
+            while(resultSet.next()) 
+            {
+                String type = resultSet.getString("TYPE");
+                String amount = resultSet.getString("AMOUNT");
+                String details = resultSet.getString("DETAILS");
+                Date _date = resultSet.getDate("TXNDATE");
+                if(((String)isoBuffer.get("P-32")).trim().equals("800004") || ((String)isoBuffer.get("P-32")).trim().equals("444445"))
+                {
+                    statementBuffer.append(StringUtils.rightPad(getTime("dd/MM/yy", _date), 11));
+                    statementBuffer.append(StringUtils.rightPad("", 11));
+                    statementBuffer.append(StringUtils.leftPad(StringUtils.rightPad((new StringBuilder(String.valueOf(type))).toString(), 1), 3));
+                    statementBuffer.append(StringUtils.leftPad((new StringBuilder(String.valueOf(amount))).toString(), 10));
+                    System.out.println((new StringBuilder("****111****")).append(statementBuffer.toString()).toString());
+                } else
+                {
+                    statementBuffer.append(StringUtils.rightPad(getTime("yyyyMMdd", _date), 8));
+                    statementBuffer.append(" ");
+                    statementBuffer.append(StringUtils.rightPad("MCONNECT", 8));
+                    statementBuffer.append(StringUtils.leftPad(amount, 12));
+                    statementBuffer.append(" ");
+                    if(type.trim().equals("CR"))
+                        type = "C";
+                    else
+                        type = "D";
+                    statementBuffer.append(StringUtils.leftPad(StringUtils.rightPad(type, 1), 1));
+                    if(length == 0)
+                        length = statementBuffer.length();
+                    System.out.println((new StringBuilder("****")).append(statementBuffer.toString()).toString());
+                }
+            }
+            if(statementBuffer.length() <= 0)
+                throw new ProcessException("68");
+            String bal = getBalance(((String)isoBuffer.get("S-102")).toString().trim());
+            isoBuffer.put("S-125", (new StringBuilder("1P06122701")).append(length).append(statementBuffer.toString()).append("AVL  BALANCE: RS.       ").append(bal).append(" THANKYOU FOR BANKING WITH US").toString());
+        } else
+        {
+            throw new ProcessException("30");
+        }
+    }
+
+    private void fundTransfer()
+        throws RequestException, SQLException, ProcessException
+    {
+        double amount = Double.parseDouble(((String)isoBuffer.get("P-4")).toString().trim()) / 100D;
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append("SELECT BALANCEAMT FROM BALANCE ");
+        sqlBuffer.append((new StringBuilder("WHERE ACCOUNTNO='")).append(((String)isoBuffer.get("S-102")).toString().trim()).append("'").toString());
+        doSelect();
+        double _dbAmount = 0.0D;
+        if(resultSet != null)
+        {
+            if(resultSet.next())
+                _dbAmount = Double.parseDouble(resultSet.getString("BALANCEAMT"));
+            else
+                throw new ProcessException("69");
+        } else
+        {
+            throw new RequestException("Connection is empty");
+        }
+        System.out.println((new StringBuilder("_dbAmount :: ")).append(_dbAmount).toString());
+        if(_dbAmount > amount)
+        {
+            System.out.println((new StringBuilder("AMOUNT DEDUCTION :::: ")).append(amount).toString());
+            _dbAmount -= amount;
+        } else
+        {
+            throw new ProcessException("51");
+        }
+        System.out.println((new StringBuilder("AMOUNT AFTER DEDUCTION :::: ")).append(_dbAmount).toString());
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append((new StringBuilder("UPDATE BALANCE SET BALANCEAMT = '")).append(_dbAmount).append("' ").toString());
+        sqlBuffer.append((new StringBuilder("WHERE ACCOUNTNO='")).append(((String)isoBuffer.get("S-102")).toString().trim()).append("'").toString());
+        if(doUpdate() != 1)
+            throw new RequestException("Unable to update the database for mini statement");
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append("SELECT BALANCEAMT, CARDNO FROM BALANCE WHERE ");
+        sqlBuffer.append((new StringBuilder("ACCOUNTNO='")).append(((String)isoBuffer.get("S-103")).toString().trim()).append("'").toString());
+        doSelect();
+        _dbAmount = 0.0D;
+        if(resultSet != null)
+        {
+            if(resultSet.next())
+            {
+                _dbAmount = Double.parseDouble(resultSet.getString("BALANCEAMT"));
+                fromCardNo = resultSet.getString("CARDNO");
+            } else
+            {
+                throw new ProcessException("69");
+            }
+        } else
+        {
+            throw new RequestException("Connection is empty");
+        }
+        System.out.println((new StringBuilder("_dbAmount :: ")).append(_dbAmount).toString());
+        _dbAmount += amount;
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append((new StringBuilder("UPDATE BALANCE SET BALANCEAMT = '")).append(_dbAmount).append("' ").toString());
+        sqlBuffer.append((new StringBuilder("WHERE ACCOUNTNO='")).append(((String)isoBuffer.get("S-103")).toString().trim()).append("'").toString());
+        if(doUpdate() == -1)
+            throw new RequestException("Unable to update the database for mini statement");
+        else
+            return;
+    }
+
+    private Connection getConnection()
+        throws SQLException
+    {
+        return DriverManager.getConnection((new StringBuilder("jdbc:apache:commons:dbcp:")).append(HostSimulator.conf.getString("TOKEN")).toString());
+    }
+
+    public String process1(String message)
+    {
+        String response = "";
+        String tag = "";
+        String authId = "";
+        String mobileNumber = "";
+        String bankId = "";
+        String rrn = "";
+        System.out.println((new StringBuilder("Request :::: ")).append(message).toString());
+        StringTokenizer token = new StringTokenizer(message, " ");
+        try
+        {
+            Thread.sleep(0x6ddd0L);
+        }
+        catch(Exception exception) { }
+        while(token.hasMoreTokens()) 
+        {
+            tag = token.nextToken();
+            authId = token.nextToken();
+            mobileNumber = token.nextToken();
+            bankId = token.nextToken();
+            if(tag.equalsIgnoreCase("APPC") || tag.equalsIgnoreCase("APPR"))
+            {
+                token.nextToken();
+                token.nextToken();
+            }
+            response = (new StringBuilder(String.valueOf(tag))).append("00 ").append(authId).append(" ").append(mobileNumber).append(" ").append(bankId).append(" N").toString();
+        }
+        System.out.println((new StringBuilder("Response :: ")).append(response).toString());
+        return response;
+    }
+
+    public String process(String message)
+    {
+        String response;
+        m24ISOMethods = new M24ISOMethods();
+        m24Utility = new M24Utility();
+        sqlBuffer = new StringBuffer();
+        response = null;
+        System.out.println((new StringBuilder("Message :: ")).append(message).toString());
+        try
+        {
+            Thread.sleep(0x895440L);
+            isoBuffer = m24ISOMethods.ISOFormatter87(message);
+            System.out.println((new StringBuilder("ISO BUFFER ::::::")).append(isoBuffer).toString());
+        }
+        catch(Exception exception) { }
+        String s;
+        if(((String)isoBuffer.get("P-35")).toString().length() == 0)
+            isoBuffer.put("P-35", "50443270007890000");
+        if(!"0200".equals(((String)isoBuffer.get("MSG-TYP")).toString().trim()))
+            break MISSING_BLOCK_LABEL_2633;
+        System.out.println((new StringBuilder("CARD NO ==")).append(((String)isoBuffer.get("P-35")).toString()).toString());
+        if(((String)isoBuffer.get("P-35")).toString().indexOf("=") != -1)
+            cardNumber = ((String)isoBuffer.get("P-35")).toString().substring(0, ((String)isoBuffer.get("P-35")).toString().indexOf("="));
+        else
+            cardNumber = ((String)isoBuffer.get("P-35")).toString();
+        connection = getConnection();
+        System.out.println((new StringBuilder("P-3 :: ")).append(((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2)).toString());
+        if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("31") && !((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("94") && !((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("96") && !((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("83"))
+            break MISSING_BLOCK_LABEL_690;
+        System.out.println("Inside fetch card details block");
+        fetchCardDetails();
+        if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("31"))
+            break MISSING_BLOCK_LABEL_594;
+        response = m24ISOMethods.buildResponse("0210", "00", isoBuffer);
+        s = response;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        return s;
+        if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("94"))
+            break MISSING_BLOCK_LABEL_2300;
+        fetchMiniStatement();
+        response = m24ISOMethods.buildResponse("0215", "00", isoBuffer);
+        s = response;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        return s;
+        if(((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("53") || ((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("MB") || ((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("MF"))
+        {
+            System.out.println("Inside update balance block");
+            details = "FUND";
+            type = "DR";
+            fundTransfer();
+            break MISSING_BLOCK_LABEL_2300;
+        }
+        if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("95"))
+            break MISSING_BLOCK_LABEL_897;
+        response = "ISO0660000150210F33880012AF5801800000000160000481642145811739999339500000000000000000224150232        0024581502320224022411111111     374214581173999933=9912000000000000000000245809022400REMOTBANKINGSRVR000000000000000UBI                MUMBAI       MH 91   27252            000057752080012000000000000044A                       40035635711111111111   015MPAYCER11234   01111000325013131234ABN111  P281825101012034               19                   0101234567890007P";
+        s = response;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        return s;
+        if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("MA"))
+            break MISSING_BLOCK_LABEL_1162;
+        String rrn = ((String)isoBuffer.get("P-37")).toString().trim();
+        String P_32 = ((String)isoBuffer.get("P-32")).toString().trim();
+        P_32 = StringUtils.rightPad(P_32, 11);
+        System.out.println((new StringBuilder("P_32::")).append(P_32).toString());
+        String tempS125 = ((String)isoBuffer.get("S-125")).toString().trim();
+        if(tempS125.startsWith("01"))
+            tempS125 = (new StringBuilder(String.valueOf(tempS125))).append("PPaid Cheque").toString();
+        else
+            tempS125 = (new StringBuilder(String.valueOf(tempS125))).append("SStopped cheque").toString();
+        isoBuffer.put("S-125", StringUtils.rightPad(tempS125, 200));
+        response = m24ISOMethods.buildResponse("0210", "00", isoBuffer);
+        s = response;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        return s;
+        if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("88"))
+            break MISSING_BLOCK_LABEL_1240;
+        response = "ISO0160000170210F23A80012EB080180000000014000048164213684285000481MA1000000000000000061417111001050822411206140614061411504432     314213684285000481=12051264670000010508090614SIN00000REMOTBANKINGSRVRUBI                MUMBAI        MH 91  253000000000000000000000000356012DVLPMPAY1234013UBSBUBSB    P065044321542850201027033501600000000001000212000100P160000000000100021                                                                                                                                                                                  ";
+        s = response;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        return s;
+        if(((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("00"))
+            throw new ProcessException("00");
+        if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("MC"))
+            break MISSING_BLOCK_LABEL_1565;
+        String rrn = ((String)isoBuffer.get("P-37")).toString().trim();
+        String P_32 = ((String)isoBuffer.get("P-32")).toString().trim();
+        P_32 = StringUtils.rightPad(P_32, 11);
+        System.out.println((new StringBuilder("P_32::")).append(P_32).toString());
+        String tempS125 = ((String)isoBuffer.get("S-125")).toString().trim();
+        isoBuffer.put("P-39", "91");
+        if(P_32.trim().equals("800004"))
+            tempS125 = (new StringBuilder(String.valueOf(tempS125))).append("IND00100IndusInd BankSBSTF").toString();
+        else
+            tempS125 = (new StringBuilder(String.valueOf(tempS125))).append("TEST CARD MPURSE FSEH                                                           (OLD NO.4) NEW NO.5, WESTMADA STREET, SRINAGAR COLONY,SAIDAPET,CHENNAI    TAMIL NADU600015INDIA                      ").toString();
+        isoBuffer.put("S-125", StringUtils.rightPad(tempS125, 200));
+        response = m24ISOMethods.buildResponse("0210", "00", isoBuffer);
+        s = response;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        return s;
+        if(((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("MM"))
+        {
+            isoBuffer.put("P-39", "00");
+            isoBuffer.put("S-125", "UMOBILE|ACIS|UNREGISTERED MOBILE.NO|9791060580|123456898989|XYZ|");
+            break MISSING_BLOCK_LABEL_2300;
+        }
+        if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("CP"))
+            break MISSING_BLOCK_LABEL_1975;
+        String P_32 = ((String)isoBuffer.get("P-32")).toString().trim();
+        P_32 = StringUtils.rightPad(P_32, 11);
+        isoBuffer.put("P-32", P_32);
+        isoBuffer.put("P-39", "00");
+        isoBuffer.put("S-102", "*");
+        String tempS125 = ((String)isoBuffer.get("S-125")).trim();
+        if(tempS125.startsWith("01"))
+        {
+            tempS125 = (new StringBuilder(String.valueOf(tempS125))).append("YN                 ").toString();
+            tempS125 = (new StringBuilder(String.valueOf(tempS125))).append("002").toString();
+            tempS125 = (new StringBuilder(String.valueOf(tempS125))).append("IND0000000123EESavings                       ").toString();
+            tempS125 = (new StringBuilder(String.valueOf(tempS125))).append("IND0000000124ECView account                  ").toString();
+        } else
+        {
+            tempS125 = StringUtils.rightPad(tempS125, 20);
+            tempS125 = (new StringBuilder(String.valueOf(tempS125))).append("TG1234567890YYYYH00").toString();
+        }
+        isoBuffer.put("S-125", StringUtils.rightPad(tempS125, 200));
+        response = m24ISOMethods.buildResponse(((String)isoBuffer.get("MSG-TYP")).toString().trim(), "00", isoBuffer);
+        s = response;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        return s;
+        if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("NE"))
+            break MISSING_BLOCK_LABEL_2240;
+        String rrn = ((String)isoBuffer.get("P-37")).toString().trim();
+        String P_32 = ((String)isoBuffer.get("P-32")).toString().trim();
+        P_32 = StringUtils.rightPad(P_32, 11);
+        System.out.println((new StringBuilder("P_32::")).append(P_32).toString());
+        isoBuffer.put("P-32", P_32);
+        String tempS125 = ((String)isoBuffer.get("S-125")).toString().trim();
+        tempS125 = (new StringBuilder(String.valueOf(tempS125))).append("          ").toString();
+        tempS125 = (new StringBuilder(String.valueOf(tempS125))).append(RandomStringUtils.randomNumeric(16)).toString();
+        isoBuffer.put("S-125", StringUtils.rightPad(tempS125, 200));
+        response = m24ISOMethods.buildResponse("0210", "00", isoBuffer);
+        s = response;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        return s;
+        if(((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("00"))
+        {
+            System.out.println("Inside update balance block1");
+            details = "PURCH";
+            type = "DR";
+        }
+        updateBalance();
+        if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("31") && !((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("94") && !((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("96"))
+        {
+            System.out.println("Inside update MINI STATEMENT balance block");
+            updateForMiniStatement();
+        }
+        String key;
+        for(Iterator bitDetails = HostSimulator.bitProperty.getKeys(); bitDetails.hasNext(); isoBuffer.put(key, HostSimulator.bitProperty.getString(key)))
+            key = bitDetails.next().toString();
+
+        if(!((String)isoBuffer.get("P-3")).toString().substring(0, 2).equals("94") && !((String)isoBuffer.get("P-3")).toString().substring(0, 2).equals("70"))
+            break MISSING_BLOCK_LABEL_2587;
+        fetchBalance();
+        fetchMiniStatement();
+        response = m24ISOMethods.buildResponse("0215", "00", isoBuffer);
+        s = response;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        return s;
+        response = m24ISOMethods.buildResponse(((String)isoBuffer.get("MSG-TYP")).toString().trim(), "00", isoBuffer);
+        System.out.println("after building the request");
+        break MISSING_BLOCK_LABEL_3161;
+        if("0420".equals(((String)isoBuffer.get("MSG-TYP")).toString().trim()))
+        {
+            connection = getConnection();
+            if(!((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("31") || !((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("94") || !((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("96"))
+                revertUpdateBalance();
+            response = m24ISOMethods.buildResponse(((String)isoBuffer.get("MSG-TYP")).toString().trim(), "00", isoBuffer);
+        } else
+        {
+            response = m24ISOMethods.buildResponse(((String)isoBuffer.get("MSG-TYP")).toString().trim(), "00", isoBuffer);
+        }
+        break MISSING_BLOCK_LABEL_3161;
+        ProcessException e;
+        e;
+        e.printStackTrace();
+        response = m24ISOMethods.buildResponse(((String)isoBuffer.get("MSG-TYP")).toString().trim(), e.getMessage(), isoBuffer);
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        break MISSING_BLOCK_LABEL_3196;
+        e;
+        e.printStackTrace();
+        response = m24ISOMethods.buildResponse(((String)isoBuffer.get("MSG-TYP")).toString().trim(), "00", isoBuffer);
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        break MISSING_BLOCK_LABEL_3196;
+        e;
+        e.printStackTrace();
+        response = m24ISOMethods.buildResponse(((String)isoBuffer.get("MSG-TYP")).toString().trim(), "00", isoBuffer);
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        break MISSING_BLOCK_LABEL_3196;
+        e;
+        e.printStackTrace();
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        break MISSING_BLOCK_LABEL_3196;
+        Exception exception1;
+        exception1;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        throw exception1;
+        clear();
+        if(connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            connection = null;
+        }
+        return response;
+    }
+
+    public void revertUpdateBalance()
+        throws RequestException, SQLException, ProcessException
+    {
+        double amount = Double.parseDouble(((String)isoBuffer.get("P-4")).toString().trim()) / 100D;
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append("SELECT BALANCEAMT FROM BALANCE ");
+        sqlBuffer.append((new StringBuilder("WHERE ACCOUNTNO='")).append(((String)isoBuffer.get("S-102")).toString().trim()).append("'").toString());
+        doSelect();
+        double _dbAmount = 0.0D;
+        if(resultSet != null)
+        {
+            if(resultSet.next())
+                _dbAmount = Double.parseDouble(resultSet.getString("BALANCEAMT"));
+            else
+                throw new ProcessException("00");
+        } else
+        {
+            throw new RequestException("Connection is empty");
+        }
+        System.out.println((new StringBuilder("_dbAmount :: ")).append(_dbAmount).toString());
+        _dbAmount += amount;
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append((new StringBuilder("UPDATE BALANCE SET BALANCEAMT = '")).append(_dbAmount).append("' ").toString());
+        sqlBuffer.append((new StringBuilder("WHERE ACCOUNTNO='")).append(((String)isoBuffer.get("S-102")).toString().trim()).append("'").toString());
+        if(doUpdate() != 1)
+            throw new RequestException("Unable to update the database for mini statement");
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append("SELECT BALANCEAMT FROM BALANCE WHERE ");
+        sqlBuffer.append((new StringBuilder("ACCOUNTNO='")).append(((String)isoBuffer.get("S-103")).toString().trim()).append("'").toString());
+        doSelect();
+        _dbAmount = 0.0D;
+        if(resultSet != null)
+        {
+            if(resultSet.next())
+                _dbAmount = Double.parseDouble(resultSet.getString("BALANCEAMT"));
+            else
+                throw new ProcessException("00");
+        } else
+        {
+            throw new RequestException("Connection is empty");
+        }
+        System.out.println((new StringBuilder("_dbAmount :: ")).append(_dbAmount).toString());
+        _dbAmount -= amount;
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append((new StringBuilder("UPDATE BALANCE SET BALANCEAMT = '")).append(_dbAmount).append("' ").toString());
+        sqlBuffer.append((new StringBuilder("WHERE ACCOUNTNO='")).append(((String)isoBuffer.get("S-103")).toString().trim()).append("'").toString());
+        doUpdate();
+    }
+
+    public void fetchBalance()
+        throws RequestException, SQLException, ProcessException
+    {
+        double amount = Double.parseDouble(((String)isoBuffer.get("P-4")).toString().trim()) / 100D;
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append((new StringBuilder("SELECT BALANCEAMT, ACCOUNTNO FROM BALANCE WHERE ACCOUNTNO='")).append(((String)isoBuffer.get("S-102")).toString().trim()).append("'").toString());
+        doSelect();
+        double _dbAmount = 0.0D;
+        if(resultSet != null)
+        {
+            if(resultSet.next())
+            {
+                _dbAmount = Double.parseDouble(resultSet.getString("BALANCEAMT"));
+                if(amount <= _dbAmount)
+                {
+                    amount = _dbAmount - amount;
+                } else
+                {
+                    System.out.println("No sufficient fund");
+                    throw new ProcessException("00");
+                }
+                System.out.println((new StringBuilder("Amount :: ")).append(m24Utility.getFormattedAmount((new StringBuilder(String.valueOf(amount))).toString(), 2)).toString());
+                isoBuffer.put("P-44", (new StringBuilder(String.valueOf(StringUtils.rightPad("253", 15)))).append(StringUtils.leftPad(m24Utility.getFormattedAmount((new StringBuilder(String.valueOf(amount))).toString(), 2), 12, '0')).append(StringUtils.leftPad(m24Utility.getFormattedAmount((new StringBuilder(String.valueOf(amount))).toString(), 2), 12, '0')).toString());
+            } else
+            {
+                throw new ProcessException("00");
+            }
+        } else
+        {
+            throw new RequestException("Connection is empty");
+        }
+    }
+
+    public void updateBalance()
+        throws RequestException, SQLException, ProcessException
+    {
+        double amount = Double.parseDouble(((String)isoBuffer.get("P-4")).toString().trim()) / 100D;
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append((new StringBuilder("SELECT BALANCEAMT, ACCOUNTNO FROM BALANCE WHERE ACCOUNTNO='")).append(((String)isoBuffer.get("S-102")).toString().trim()).append("'").toString());
+        doSelect();
+        double _dbAmount = 0.0D;
+        if(resultSet != null)
+        {
+            if(resultSet.next())
+            {
+                _dbAmount = Double.parseDouble(resultSet.getString("BALANCEAMT"));
+                if(amount <= _dbAmount)
+                {
+                    amount = _dbAmount - amount;
+                } else
+                {
+                    System.out.println("No sufficient fund");
+                    throw new ProcessException("00");
+                }
+                System.out.println((new StringBuilder("Amount :: ")).append(m24Utility.getFormattedAmount((new StringBuilder(String.valueOf(amount))).toString(), 2)).toString());
+                isoBuffer.put("P-44", (new StringBuilder(String.valueOf(StringUtils.rightPad("253", 15)))).append(StringUtils.leftPad(m24Utility.getFormattedAmount((new StringBuilder(String.valueOf(amount))).toString(), 2), 12, '0')).toString());
+                isoBuffer.put("S-102", StringUtils.rightPad(resultSet.getString("ACCOUNTNO"), 28));
+                String tempBal = (new StringBuilder("10")).append(StringUtils.leftPad(m24Utility.getFormattedAmount((new StringBuilder(String.valueOf(amount))).toString(), 2), 15, '0')).toString();
+                tempBal = (new StringBuilder(String.valueOf(tempBal))).append("10").append(StringUtils.leftPad(m24Utility.getFormattedAmount((new StringBuilder(String.valueOf(amount))).toString(), 2), 15, '0')).toString();
+                tempBal = (new StringBuilder(String.valueOf(tempBal))).append("1-").append(StringUtils.leftPad(m24Utility.getFormattedAmount((new StringBuilder(String.valueOf(amount))).toString(), 2), 17, '0')).toString();
+                isoBuffer.put("S-125", StringUtils.rightPad(tempBal, 200));
+            } else
+            {
+                throw new ProcessException("00");
+            }
+        } else
+        {
+            throw new RequestException("Connection is empty");
+        }
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append((new StringBuilder("UPDATE BALANCE SET BALANCEAMT = '")).append(amount).append("' WHERE ").toString());
+        sqlBuffer.append((new StringBuilder("ACCOUNTNO = '")).append(((String)isoBuffer.get("S-102")).toString().trim()).append("'").toString());
+        if(doUpdate() != 1)
+            throw new RequestException("Unable to update the database");
+        else
+            return;
+    }
+
+    private void updateForMiniStatement()
+        throws RequestException, SQLException
+    {
+        double amount = Double.parseDouble(((String)isoBuffer.get("P-4")).toString().trim()) / 100D;
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append("INSERT INTO STATEMENT ( CARDNO, TYPE, ");
+        sqlBuffer.append("AMOUNT, DETAILS, ACCOUNTNO ) VALUES ('");
+        sqlBuffer.append((new StringBuilder(String.valueOf(cardNumber))).append("','").append(type).append("','").append(amount).append("', '").append(details).append("', '").append(((String)isoBuffer.get("S-102")).toString().trim()).append("')").toString());
+        if(doUpdate() != 1)
+            throw new RequestException("Unable to update the database for mini statement");
+        if(((String)isoBuffer.get("P-3")).toString().trim().substring(0, 2).equals("53"))
+        {
+            sqlBuffer.delete(0, sqlBuffer.length());
+            sqlBuffer.append("INSERT INTO STATEMENT ( CARDNO, TYPE, ");
+            sqlBuffer.append("AMOUNT, DETAILS, ACCOUNTNO ) VALUES ('");
+            sqlBuffer.append((new StringBuilder(String.valueOf(fromCardNo))).append("','CR','").append(amount).append("', '").append(details).append("', '").append(((String)isoBuffer.get("S-103")).toString().trim()).append("')").toString());
+            if(doUpdate() != 1)
+                throw new RequestException("Unable to update the database for mini statement");
+        }
+    }
+
+    public final String getTime(String format, Date date)
+    {
+        return FastDateFormat.getInstance(format).format(date);
+    }
+
+    public String getBalance(String accNO)
+        throws RequestException, SQLException
+    {
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append((new StringBuilder("SELECT BALANCEAMT, ACCOUNTNO FROM BALANCE WHERE ACCOUNTNO='")).append(((String)isoBuffer.get("S-102")).toString().trim()).append("'").toString());
+        doSelect();
+        String _dbAmount = "0";
+        String amt = "";
+        if(resultSet != null && resultSet.next())
+        {
+            _dbAmount = resultSet.getString("BALANCEAMT");
+            amt = _dbAmount;
+        }
+        return amt;
+    }
+
+    public static String convertToINR(String amount)
+    {
+        StringBuffer sb = new StringBuffer();
+        try
+        {
+            sb.delete(0, sb.length());
+            for(StringTokenizer amtTok = new StringTokenizer(amount, "."); amtTok.hasMoreTokens();)
+            {
+                amount = amtTok.nextToken().trim();
+                String tempDecPos = amtTok.nextToken().trim();
+                if(tempDecPos.length() < 2)
+                    tempDecPos = (new StringBuilder(String.valueOf(tempDecPos))).append("0").toString();
+                amount = (new StringBuilder(String.valueOf(amount))).append(tempDecPos).toString();
+            }
+
+            sb = new StringBuffer(amount);
+            int len = amount.length();
+            if(len > 2)
+            {
+                sb.insert(len - 2, ".");
+                if(len > 5)
+                    sb.insert(len - 5, ",");
+                if(len > 7)
+                    sb.insert(len - 7, ",");
+                if(len > 9)
+                    sb.insert(len - 9, ",");
+            } else
+            if(len == 2)
+                sb = new StringBuffer((new StringBuilder("0.")).append(amount).toString());
+            else
+            if(len == 1)
+                sb = new StringBuffer((new StringBuilder("0.0")).append(amount).toString());
+        }
+        catch(Exception e)
+        {
+            System.out.println((new StringBuilder("exception::")).append(e.getMessage()).toString());
+        }
+        return sb.toString();
+    }
+
+    private String cardNumber;
+    private String fromCardNo;
+    private Connection connection;
+    private String details;
+    private Hashtable isoBuffer;
+    private M24ISOMethods m24ISOMethods;
+    private M24Utility m24Utility;
+    private ResultSet resultSet;
+    private StringBuffer sqlBuffer;
+    private Statement statement;
+    private String type;
+}

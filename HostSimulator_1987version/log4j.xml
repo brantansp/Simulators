@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	
+	<appender name="OUTPUT"
+					class="org.apache.log4j.M24DailyRollingFileAppender">
+			<param name="file" value="${user.dir}\\output\\HostSimulator.log" />
+			<param name="datePattern" value="ddMMyyyy'.'" />
+			<!-- Max file size should be mentioned always in KB -->
+			<param name="maxFileSize" value="512" />
+			<param name="append" value="true" />
+			<layout class="org.apache.log4j.PatternLayout">
+				<param name="ConversionPattern"
+					   		value="%d{dd:MM:yyyy HH:mm:ss.SSS} - %C{1} (%M:%L) - %m%n" />
+			</layout>
+	</appender>
+	
+	
+
+	<logger name="com.src.output" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="OUTPUT" />
+	</logger>
+
+
+	
+</log4j:configuration>

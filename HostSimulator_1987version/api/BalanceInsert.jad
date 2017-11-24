@@ -1,0 +1,241 @@
+// Decompiled by DJ v3.5.5.77 Copyright 2003 Atanas Neshkov  Date: 4/28/2014 12:27:27 PM
+// Home Page : http://members.fortunecity.com/neshkov/dj.html  - Check often for new version!
+// Decompiler options: packimports(3) 
+// Source File Name:   BalanceInsert.java
+
+package api;
+
+import java.io.*;
+import java.sql.*;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.dbcp.ConnectionFactory;
+import org.apache.commons.dbcp.DriverManagerConnectionFactory;
+import org.apache.commons.lang.RandomStringUtils;
+
+// Referenced classes of package api:
+//            RequestException
+
+public class BalanceInsert
+{
+
+    public BalanceInsert()
+    {
+        sqlBuffer = new StringBuffer();
+    }
+
+    public static void main(String ar[])
+    {
+        (new BalanceInsert()).insert();
+    }
+
+    public void insert()
+    {
+        try
+        {
+            try
+            {
+                connection = getConnection();
+            }
+            catch(ConfigurationException e1)
+            {
+                e1.printStackTrace();
+            }
+            BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+            System.out.print("Please Enter account number for Statement & Balance:");
+            try
+            {
+                String str = bf.readLine();
+                accNO = str;
+                updateMinistatement(accNO);
+                UpdateBalance(accNO);
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+            break MISSING_BLOCK_LABEL_113;
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+        closeConnection();
+        System.err.println("Balance and Statement Inserted successfully:");
+        break MISSING_BLOCK_LABEL_125;
+        Exception exception;
+        exception;
+        closeConnection();
+        System.err.println("Balance and Statement Inserted successfully:");
+        throw exception;
+        closeConnection();
+        System.err.println("Balance and Statement Inserted successfully:");
+    }
+
+    public void UpdateBalance(String AccNo)
+    {
+        String amount = Amount();
+        sqlBuffer.delete(0, sqlBuffer.length());
+        sqlBuffer.append("INSERT INTO BALANCE ( ID, BALANCEAMT, ");
+        sqlBuffer.append("ACCOUNTNO, CARDNO, ACCOUNTTYPE , LEDGERAMT ) VALUES (");
+        sqlBuffer.append((new StringBuilder("(select max(ID)+1 from balance),'")).append(amount).append("','").append(AccNo).append("', '").append(cardNumber).append("', '").append("10','").append(amount).append("')").toString());
+        try
+        {
+            resultSet = doSelect(sqlBuffer);
+        }
+        catch(RequestException e)
+        {
+            e.printStackTrace();
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public ResultSet doSelect(StringBuffer sqlbuffer)
+        throws RequestException, SQLException
+    {
+        if(connection == null)
+        {
+            throw new RequestException("Connection is null");
+        } else
+        {
+            clear();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(sqlBuffer.toString());
+            return resultSet;
+        }
+    }
+
+    public void clear()
+    {
+        if(resultSet != null)
+        {
+            try
+            {
+                resultSet.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            resultSet = null;
+        }
+        if(statement != null)
+        {
+            try
+            {
+                statement.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            statement = null;
+        }
+    }
+
+    public Connection getConnection()
+        throws SQLException, ConfigurationException
+    {
+        String url = "";
+        String DSN = "";
+        String user = "";
+        String pwd = "";
+        try
+        {
+            java.net.URL input = getClass().getClassLoader().getResource("simulator\\conf.properties");
+            PropertiesConfiguration conf = new PropertiesConfiguration(input);
+            url = conf.getString("URL");
+            DSN = conf.getString("DSN");
+            user = conf.getString("USERNAME");
+            pwd = conf.getString("PASSWORD");
+            Class.forName(url);
+        }
+        catch(ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        System.out.println("Connecting to database...");
+        ConnectionFactory conn = new DriverManagerConnectionFactory(DSN, user, pwd);
+        connection = conn.createConnection();
+        return connection;
+    }
+
+    private void updateMinistatement(String AccNo)
+    {
+        cardNumber = CardNo();
+        for(int i = 0; i < 9; i++)
+        {
+            String type;
+            String details;
+            if(i % 2 == 0)
+            {
+                type = "DR";
+                details = "DEBIT";
+            } else
+            {
+                type = "CR";
+                details = "FUND";
+            }
+            String amount = Amount();
+            sqlBuffer.delete(0, sqlBuffer.length());
+            sqlBuffer.append("INSERT INTO STATEMENT ( CARDNO, TYPE, ");
+            sqlBuffer.append("AMOUNT, DETAILS, ACCOUNTNO ) VALUES ('");
+            sqlBuffer.append((new StringBuilder(String.valueOf(cardNumber))).append("','").append(type).append("','").append(amount).append("', '").append(details).append("', '").append(AccNo.toString().trim()).append("')").toString());
+            try
+            {
+                resultSet = doSelect(sqlBuffer);
+            }
+            catch(RequestException e)
+            {
+                e.printStackTrace();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public String CardNo()
+    {
+        String card = RandomStringUtils.randomNumeric(16);
+        return card;
+    }
+
+    public String Amount()
+    {
+        String amount = RandomStringUtils.randomNumeric(7);
+        return amount;
+    }
+
+    public void closeConnection()
+    {
+        try
+        {
+            connection.close();
+            break MISSING_BLOCK_LABEL_30;
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+        connection = null;
+        break MISSING_BLOCK_LABEL_34;
+        Exception exception;
+        exception;
+        connection = null;
+        throw exception;
+        connection = null;
+    }
+
+    private ResultSet resultSet;
+    private StringBuffer sqlBuffer;
+    private Statement statement;
+    private static Connection connection;
+    private String accNO;
+    String cardNumber;
+}
