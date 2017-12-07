@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:id="@+id/frag_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/header_bg" >
+
+        <ImageView
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="fill_vertical"
+            android:src="@drawable/usericon" />
+
+        <ImageView
+            android:id="@+id/header1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="fill_vertical"
+            android:src="@drawable/header_new" />
+    </RelativeLayout>
+
+    <!-- Showing Bar Line -->
+
+    <LinearLayout
+        android:id="@+id/line_header"
+        android:layout_width="fill_parent"
+        android:layout_height="4dp"
+        android:layout_below="@+id/frag_header"
+        android:background="@drawable/header_line"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/frag_main"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/line_header"
+        android:background="@drawable/bg_innerpage"
+        android:fillViewport="true"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/frag_Det"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/frag_footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="right"
+        android:orientation="horizontal" >
+
+        <!--
+    ImageView  android:id="@+id/footer"  
+	android:src="@drawable/footer"   
+	 android:gravity="right"
+	android:layout_width="wrap_content"   
+	android:layout_height="wrap_content"/>
+        -->
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -225,8 +225,8 @@ final int[] UNBIBITMAP87 = {/*
 			    ledgr = StringUtils.leftPad(ledgr, 16, '0');
 			    System.out.println("Avlbal : " +Avlbal );
 			    System.out.println("ledgr : " +ledgr );
-				//isoBuffer.put("P-48", "+"+ledgr+"+"+Avlbal+"+0000000008000000+0000000000000000+0000000000000000INR              ");
-			 isoBuffer.put("P-48", "+0000000000000008+0000000000000008+0000000000000062+0000000000000000+0000000000000000INR              ");
+				isoBuffer.put("P-48", "+"+ledgr+"+"+Avlbal+"+0000000008000000+0000000000000000+0000000000000000INR              ");
+			// isoBuffer.put("P-48", "+0000000000000008+0000000000000008+0000000000000062+0000000000000000+0000000000000000INR              ");
 /*
 				isoBuffer.put("P-48", "+"
 						+ StringUtils.leftPad(m24Utility.getFormattedAmount(
@@ -243,7 +243,7 @@ final int[] UNBIBITMAP87 = {/*
 																		_dbAmount, 2), 16, '0')+
 												
 											"INR");
-	*/	
+	*/
 
 				isoBuffer.put("S-102", StringUtils.rightPad(resultSet
 						.getString("ACCOUNTNO"), 28));

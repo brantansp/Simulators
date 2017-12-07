@@ -1,0 +1,15 @@
+# view AndroidManifest.xml #generated:36
+-keep class com.fss.tmb.Fragment_Activity { <init>(...); }
+
+# view AndroidManifest.xml #generated:40
+-keep class com.fss.tmb.GridScreenViewActivation { <init>(...); }
+
+# view AndroidManifest.xml #generated:44
+-keep class com.fss.tmb.Loading { <init>(...); }
+
+# view AndroidManifest.xml #generated:27
+-keep class com.fss.tmb.SplashScreen { <init>(...); }
+
+# view AndroidManifest.xml #generated:21
+-keep class com.fss.tmb.TMBControlApplication { <init>(...); }
+

@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!-- @author Siva G  -->
+<resources>
+
+	<string name="help_117">
+		&lt;b&gt;Login Password: &lt;/b&gt; Please
+		enter the Login Password that has
+		been sent through SMS to your
+		mobile inbox by your bank for mobile
+		banking services
+		&lt;br/&gt;&lt;br/&gt; &lt;b&gt;New Password: &lt;/b&gt; Please
+		enter
+		your custom Login Password&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Confirm New
+		Password: &lt;/b&gt; Please re-enter your custom
+		Login Password.
+	</string>
+	<string name="help_9840">
+		&lt;b&gt;Login: &lt;/b&gt;To log into the
+		application&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Products: &lt;/b&gt;To access bank schemes, services, and
+		financial products&lt;br/&gt;&lt;br/&gt;
+		<!-- &lt;b&gt;Sign up: &lt;/b&gt;To
+		register for mobile banking
+		service&lt;br/&gt;&lt;br/&gt; -->
+		&lt;b&gt;Refer a Friend: &lt;/b&gt;To
+		refer a friend about availing the mobile
+		banking
+		services&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Locator: &lt;/b&gt;To search for the bank’s ATM or branch
+		address&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Feedback:
+		&lt;/b&gt;To send your feedback on the services provided and view the
+		current status of your feedback&lt;br/&gt;&lt;br/&gt;
+		 </string>
+	<string name="help_9841">
+	    &lt;b&gt;Transfer: &lt;/b&gt;To perform banking services such as Fund Transfer
+		&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Accounts: &lt;/b&gt;To perform banking services such as Balance Enquiry, Mini
+		Statement and Transaction History
+		&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Deposit: &lt;/b&gt; TMB Offers wide range of Deposit Schemes. Open your preferred Deposit Schemes here	&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Payments: &lt;/b&gt;To perform payments for utility bills and Donations  &lt;br/&gt;&lt;br/&gt; <!--  Tickets,Institution Fees  -->
+		&lt;b&gt;IMPS: &lt;/b&gt;To transfer funds to other account(s) using
+		Immediate Payment Service&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Requests: &lt;/b&gt;To perform banking services such as request To Bank&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Recharge: &lt;/b&gt;To recharge your prepaid Mobile /DTH /Data Card.&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Settings: &lt;/b&gt;To customize your mobile banking
+		application&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Change mPIN: &lt;/b&gt;To change your mPIN&lt;br/&gt;&lt;br/&gt; 
+		&lt;b&gt;Messages: &lt;/b&gt;To view acknowledged messages of each
+		transaction&lt;br/&gt;&lt;br/&gt;</string>
+	<string name="help_130">
+	    &lt;b&gt;Login Password: &lt;/b&gt; Please
+		enter the Login Password that has
+		been sent through SMS to your
+		mobile inbox by your bank for mobile
+		banking services
+		&lt;br/&gt;&lt;br/&gt; &lt;b&gt;New Password: &lt;/b&gt; Please
+		enter
+		your custom Login Password&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Confirm New
+		Password: &lt;/b&gt; Please re-enter your custom
+		Login Password.
+	</string>
+
+	<string name="help_216">
+		&lt;b&gt;Login Password: &lt;/b&gt; Please
+		enter the Login Password that has
+		been sent through SMS to your
+		mobile inbox by your bank for mobile
+		banking services
+		&lt;br/&gt;&lt;br/&gt; &lt;b&gt;New Password: &lt;/b&gt; Please
+		enter
+		your custom Login Password&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Confirm New
+		Password: &lt;/b&gt; Please re-enter your custom
+		Login Password.
+	</string>
+	<string name="help_5">&lt;b&gt;mPIN: &lt;/b&gt; Please enter the mPIN
+		that has been sent through SMS to your mobile inbox by your bank for
+		mobile banking services&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;New mPIN:
+		&lt;/b&gt; Please
+		enter your custom mPIN&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Confirm New mPIN: &lt;/b&gt;
+		Please re-enter your custom mPIN
+	</string>
+
+	<string name="help_20555">&lt;b&gt;mPIN: &lt;/b&gt; Please enter the mPIN
+		that has been sent through SMS to your mobile inbox by your bank for
+		mobile banking services&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;New mPIN:
+		&lt;/b&gt; Please
+		enter your custom mPIN&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Confirm New mPIN: &lt;/b&gt;
+		Please re-enter your custom mPIN
+	</string>
+
+	<string name="help_16">&lt;b&gt;GPRS: &lt;/b&gt; Helps you to make
+		transactions using internet. This is the preferred mode to make fast
+		transactions. &lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;SMS: &lt;/b&gt; Helps you
+		to make
+		transactions using SMS (SMS usage is
+		charged as per the
+		applicable
+		rates).
+    </string>
+
+	<string name="help_63">&lt;b&gt;GPRS: &lt;/b&gt; Helps you to make
+		transactions using internet. This is the preferred mode to make fast
+		transactions. &lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;SMS: &lt;/b&gt; Helps you
+		to make
+		transactions using SMS (SMS usage is
+		charged as per the
+		applicable
+		rates).
+    </string>
+
+	<!-- string name="help_123">&lt;b&gt;Login Password: &lt;/b&gt; Please
+		enter the Login Password &lt;br/&gt;&lt;br/&gt; </string> -->
+
+	<string name="help_li_121">&lt;b&gt;Balance Enquiry: &lt;/b&gt;To enquire
+		about your account(s) balance&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Mini
+		Statement:
+		&lt;/b&gt; To view your last few
+		transactions&lt;br/&gt;&lt;br/&gt;
+        &lt;b&gt;Deposit Account Balance:
+		&lt;/b&gt;To enquire about your deposit account balance&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Loan Balance:
+		&lt;/b&gt;To enquire about your loan balance&lt;br/&gt;&lt;br/&gt;
+        &lt;b&gt;Transaction History:
+		&lt;/b&gt; To view recent done transactions&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Inward Cheque Status:
+		&lt;/b&gt; To check the current status of the inward cheque&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Outward Cheque Status:
+		&lt;/b&gt; To check the current status of the outward cheque&lt;br/&gt;&lt;br/&gt;
+		</string> 
+
+	<string name="help_li_106">
+		&lt;b&gt;Fund Transfer - To Mobile No.:
+		&lt;/b&gt;
+		To transfer funds using beneficiary’s Mobile number
+		through
+		IMPS&lt;br/&gt;&lt;br/&gt;
+
+		&lt;b&gt;Fund Transfer - To Account No.:
+		&lt;/b&gt; To transfer funds using
+		beneficiary’s Account number
+		through
+		IMPS&lt;br/&gt;&lt;br/&gt;
+
+		&lt;b&gt;Fund Transfer - To AADHAAR No.:
+		&lt;/b&gt; To transfer funds
+		using beneficiary’s AADHAAR number
+		through
+		IMPS&lt;br/&gt;&lt;br/&gt;
+
+		&lt;b&gt;IMPS Merchant Payment:
+		&lt;/b&gt; To
+		transfer funds using
+		Merchant’s Mobile number
+		through
+		IMPS&lt;br/&gt;&lt;br/&gt;
+
+		&lt;b&gt;Generate OTP (One Time Password):
+		&lt;/b&gt; To generate OTP
+		for
+		authenticating the merchant payments
+		using
+		IMPS&lt;br/&gt;&lt;br/&gt;
+
+		&lt;b&gt;Generate MMID (Mobile Money
+		Identifier): &lt;/b&gt; To
+		generate MMID for
+		availing the IMPS
+		facility&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Retrieve MMID
+		(Mobile Money
+		Identifier): &lt;/b&gt; To know
+		your Mobile Money
+		Identifier&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Cancel MMID (Mobile
+		Money
+		Identifier): &lt;/b&gt; To cancel your Mobile
+		Money
+		Identifier&lt;br/&gt;&lt;br/&gt;
+
+		<!-- &lt;b&gt;Registered IMPS – Mobile No.:
+		&lt;/b&gt;
+		To register beneficiaries using their
+		mobile number, perform
+		fund
+		transfer to the registered beneficiaries,
+		and deregister
+		beneficiaries&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Registered
+		IMPS – Account
+		No.:
+		&lt;/b&gt; To register beneficiaries using their
+		account number,
+		perform fund transfer to the registered beneficiaries,
+		and deregister
+		beneficiaries&lt;br/&gt;&lt;br/&gt;
+		 &lt;b&gt;Registered IMPS – AADHAAR
+		No.:
+		&lt;/b&gt; To register beneficiaries using their
+		AADHAAR number,
+		perform fund transfer to the registered beneficiaries,
+		and deregister
+		beneficiaries&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Registered
+		IMPS -
+		Merchant:
+		&lt;/b&gt; To register merchants using their mobile
+		number,
+		perform
+		payment to the registered merchant, and deregister
+		merchant&lt;br/&gt;&lt;br/&gt; --> </string>
+	<string name="help_li_8">
+	    &lt;b&gt;My Own Accounts: &lt;/b&gt; To transfer funds to your own account in the same branch/bank&lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Within TMB: &lt;/b&gt; To transfer funds
+		to the accounts within the same bank&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Other Bank:
+		&lt;/b&gt; To transfer funds to other bank
+		accounts&lt;br/&gt;&lt;br/&gt; </string>
+	<string name="help_li_253">	
+	    &lt;b&gt;Open Recurring Deposit: &lt;/b&gt; To open Recurring Deposit&lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Open Fixed Deposit (Simple Interest): &lt;/b&gt; To open Fixed Deposit&lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Open Navarathnamala Deposit: &lt;/b&gt; To open Navarathnamala Deposit&lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Open Muthukuvial Deposit: &lt;/b&gt;To open Muthukuvial Deposit &lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Special 20:20 Deposit: &lt;/b&gt; To open Special 20:20 Deposit&lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Special 555 Deposit: &lt;/b&gt; To open Special 555 Deposit&lt;br/&gt;&lt;br/&gt;
+	</string>
+	<string name="help_li_9">&lt;b&gt;Mobile-to-Mobile: &lt;/b&gt; To transfer
+		funds using beneficiary mobile number&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Mobile-to-Account: &lt;/b&gt; To transfer funds using beneficiary’s account number&lt;br/&gt;&lt;br/&gt; </string>
+	<string name="help_li_43">&lt;b&gt;NEFT: &lt;/b&gt; To transfer funds to
+		other bank accounts using National Electronic Fund Transfer (NEFT)
+	</string>
+	<string name="help_li_4">&lt;b&gt;Registered Bill Payment: &lt;/b&gt; To
+	register different billers and make payments. In this payment mode,
+	you can view the bill and make the payment. &lt;br/&gt;&lt;br/&gt;
+	&lt;b&gt;Instant Bill Payment: &lt;/b&gt; To pay utility bills without
+	registering a biller. This option is provided by certain billers only.
+	&lt;br/&gt;&lt;br/&gt; </string>
+	<string name="help_li_1">
+		&lt;b&gt;Bill Pay: &lt;/b&gt; To pay utility bills. &lt;br/&gt;&lt;br/&gt;
+		<!-- &lt;b&gt;Airline Ticketing:&lt;/b&gt; To book, buy, and print
+		airline/flight tickets.&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Movie Ticketing: &lt;/b&gt; To buy movie/cinema tickets.
+		&lt;br/&gt;&lt;br/&gt; -->
+		&lt;b&gt;Donation: &lt;/b&gt;To donate funds to religious Institutions/charities/trusts/etc.&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Fees Payment: &lt;/b&gt; To pay tution/hostel fees.&lt;br/&gt;&lt;br/&gt; 
+		</string>
+	<string name="help_li_122">&lt;b&gt;Stop Cheque: &lt;/b&gt; To stop a cheque
+		from payment&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Cheque Status: &lt;/b&gt;
+		To check the
+		current status of the issued
+		cheque&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Card Hotlist:
+		&lt;/b&gt; To block your debit card
+		instantly&lt;br/&gt;&lt;br/&gt;
+		
+		<!-- &lt;b&gt;IRCTC Prepaid Card :
+		&lt;/b&gt; To perform card issuance and
+		top up of
+		IRCTC Prepaid Card&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;E-cash: &lt;/b&gt; To transfer funds and allow beneficiary to withdraw them using his mobile number.&lt;br/&gt;&lt;br/&gt; -->
+		 </string>
+	<string name="help_li_26">&lt;b&gt;Booking &amp; Payment: &lt;/b&gt; To book
+		and
+		pay for the Airline Tickets&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Payment
+		Only:
+		&lt;/b&gt; To make payment for the tickets booked through call
+		centres
+		and other ticketing vendors&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Reprint Ticket:
+		&lt;/b&gt; To reprint the booked airline
+		ticket&lt;br/&gt;&lt;br/&gt; </string>
+	<string name="help_li_12">&lt;b&gt;Account Fetch: &lt;/b&gt; To fetch all the
+		accounts linked with your mobile number&lt;br/&gt;&lt;br/&gt;
+
+		<!-- &lt;b&gt;Communication
+		Mode: &lt;/b&gt; To modify
+		the default
+		Communication Mode&lt;br/&gt;&lt;br/&gt; -->
+		&lt;b&gt;Save Message in
+		Inbox: &lt;/b&gt; To enable/disable to save
+		the transaction
+		acknowledgement messages in the application’s
+		Inbox&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Change Login Password: &lt;/b&gt; To
+		change the
+		Login Password&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Contact Us: &lt;/b&gt; Get in touch with us for any Queries, Feedback or Grievances&lt;br/&gt;&lt;br/&gt;
+		&lt;b&gt;Configure/Update E-Mail ID:
+		&lt;/b&gt; To
+		configure or update the E-mail ID to record
+		transactions&lt;br/&gt;&lt;br/&gt;
+		<!-- &lt;b&gt;WAP: &lt;/b&gt;To access
+		mobile banking through bank’s WAP
+		site&lt;br/&gt;&lt;br/&gt; -->
+		</string>
+	<string name="help_256">
+	&lt;b&gt;&lt;/b&gt;For Queries/Feedback or any Grievances, please mail us to mobile_banking@tmbank.in&lt;br/&gt;&lt;br/&gt;
+	&lt;b&gt;&lt;/b&gt;In case you still have a query, please feel free to Call us in 044-26194684/85, 044-26223115&lt;br/&gt;&lt;br/&gt;    
+	</string>  
+	
+	<string name="help_li_3">
+	    &lt;b&gt;Hotlist Debit Card: &lt;/b&gt;To block your debit card instantly &lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Cheque Status: &lt;/b&gt;To check the current status of the issued cheque &lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Stop Cheque: &lt;/b&gt;To stop a cheque from payment &lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Cheque Book: &lt;/b&gt;Place a New Cheque Book request here. Your Cheque book will be dispatched to your mailing address &lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Debit Card: &lt;/b&gt;Place a New ATM/Debit card request here. Your Card will be dispatched to your mailing address &lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Credit Card: &lt;/b&gt;Request for New Credit Card here. Our Bank personal will contact you &lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;eConnect SignOn password: &lt;/b&gt;Forgot your eConnect SignOn password? Place a Request here. Your Password will be dispatched to your mailing address &lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;eConnect Transaction Password: &lt;/b&gt;Forgot your eConnect Transaction Password? Place a Request here. Your Password will be dispatched to your mailing address &lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Debit Card PIN: &lt;/b&gt;Forgot your ATM/Debit Card Pin? Place a Request here. Your Pin will be dispatched to your mailing address &lt;br/&gt;&lt;br/&gt;
+	    &lt;b&gt;Loan: &lt;/b&gt;TMB offers you loans based on your requirements and fulfill your dreams! Place a Request here for your branch person to contact you &lt;br/&gt;&lt;br/&gt;
+	</string>     	
+	<string name="help_nodata">&lt;b&gt;Sorry! No Data Found &lt;/b&gt;</string>
+	<string name="help_li_">&lt;b&gt;Sorry! No Data Found For this List Screen
+		&lt;/b&gt;</string>
+</resources>

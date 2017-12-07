@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:orientation="vertical" android:layout_height="fill_parent">
+  <!-- LinearLayout
+  android:id="@+id/llhead"
+  android:layout_alignParentTop="true"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical" android:background="@drawable/header_bg">
+  <ImageView android:id="@+id/header_img" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity ="left" android:background="@drawable/header_new"></ImageView>
+</LinearLayout> -->
+<LinearLayout 
+	android:id="@+id/LinearLayout01"
+	  android:layout_alignParentTop="true"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent" android:background="@drawable/bg_innerpage" android:orientation="vertical">
+	
+<GridView 
+    android:id="@+id/gridview"
+    android:layout_width="fill_parent" 
+   
+    android:stretchMode="columnWidth"
+    android:gravity="center" android:layout_height="wrap_content">
+</GridView>
+</LinearLayout>
+<LinearLayout android:id="@+id/gridList"  android:layout_height="wrap_content" android:orientation="vertical" android:layout_alignParentBottom="true" android:layout_width="fill_parent" android:background="@color/fontgreen">
+</LinearLayout>
+</RelativeLayout>

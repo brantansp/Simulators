@@ -101,7 +101,7 @@ public class HostSimulator extends Thread {
 					//Thread.sleep(millis);
 					System.out.println("TMB Response :: "+response +"\n\r");
 
-				//	Simulator.write(this.bufferedWriter, response, 3, 4);
+					Simulator.write(this.bufferedWriter, response, 3, 4);
 				}
 				catch(final SocketException e) {
 

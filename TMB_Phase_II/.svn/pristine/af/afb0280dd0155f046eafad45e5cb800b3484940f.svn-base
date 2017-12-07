@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+
+	<CheckBox android:id="@+id/cbActive" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:height="1sp"
+		android:minHeight="2sp" android:minWidth="2sp" android:visibility="visible"
+		android:layout_centerVertical="true">
+	</CheckBox>
+
+	<TextView android:id="@+id/listText1" android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:padding="6sp"
+		android:layout_toRightOf="@id/cbActive"
+		android:gravity="left|center" android:marqueeRepeatLimit="marquee_forever"
+		android:textColor="#000000" android:textColorHighlight="@color/txtBack"
+		android:layout_weight="1" android:layout_centerHorizontal="true" android:layout_centerVertical="true"></TextView>
+
+<View
+        android:id="@+id/viewDiv"
+        android:layout_width="fill_parent"
+        android:layout_height="7dp"
+        android:layout_below="@id/cbActive"/>
+
+</RelativeLayout>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_innerpage"
+    android:orientation="vertical" >
+
+    <!--
+LinearLayout
+  android:id="@+id/llhead"
+  android:layout_alignParentTop="true"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical" android:background="@drawable/header_bg">
+  <ImageView android:id="@+id/header_img" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity ="left" android:background="@drawable/header_new"></ImageView>
+</LinearLayout>
+    -->
+
+    <LinearLayout
+        android:id="@+id/llTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/Gridtext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="left|center"
+                    android:singleLine="true"
+                    android:text="Welcome" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="left|center"
+                    android:singleLine="true"
+                    android:text="User"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_marginRight="10dp" >
+
+                <Button
+                    android:id="@+id/notifi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:background="@drawable/post_notification"
+                    android:gravity="center" >
+                </Button>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llgridmain"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/gridList"
+        android:layout_below="@+id/llTitle"
+        android:orientation="vertical" >
+
+        <!--
+    FOR WIDTH DIFFERENCE
+	android:paddingLeft="25dp" 
+    android:paddingTop="18dp" 
+    android:paddingRight="25dp"
+        -->
+
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:stretchMode="columnWidth" >
+        </GridView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/gridList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/fontgreen"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+</RelativeLayout>

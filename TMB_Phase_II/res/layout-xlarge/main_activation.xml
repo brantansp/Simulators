@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_innerpage" >
+
+         <RelativeLayout
+        android:id="@+id/frag_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal" 
+        android:background="@drawable/header_bg" >
+
+        <ImageView
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="fill_vertical"
+            android:src="@drawable/usericon" />
+
+        <ImageView
+            android:id="@+id/header1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="fill_vertical"
+            android:src="@drawable/header_new" />
+    </RelativeLayout>
+
+    <!-- Showing Bar Line -->
+
+    <LinearLayout
+        android:id="@+id/line_header"
+        android:layout_width="fill_parent"
+        android:layout_height="4dp"
+        android:layout_below="@+id/frag_header"
+        android:background="@drawable/header_line"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/act_scrollgsva"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+          android:layout_below="@+id/line_header"
+        android:layout_above="@id/actTab"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:id="@+id/frag_main"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/act_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center" >
+
+                <ImageView
+                    android:id="@+id/act_banner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/banner" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/act_grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_margin="20dp" >
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+<LinearLayout android:id="@+id/actTab"  android:layout_height="wrap_content" android:orientation="vertical" android:layout_alignParentBottom="true" android:layout_width="fill_parent"></LinearLayout>
+</RelativeLayout>
