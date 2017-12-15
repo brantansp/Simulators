@@ -36,6 +36,10 @@ import org.apache.commons.lang.time.FastDateFormat;
 
 
 
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import db.ConnectionManager;
 import simulator.HostSimulator;
 
@@ -48,6 +52,8 @@ import simulator.HostSimulator;
 
 public class MPaySimulator implements Processor {
 
+	private static Log log = LogFactory.getLog(MPaySimulator.class);
+	
 	private String cardNumber;
 
 	private String fromCardNo;
@@ -1239,9 +1245,13 @@ final int[] UNBIBITMAP87 = {/*
 		return FastDateFormat.getInstance(format).format(date);
 	}
 
-
+public static void main(String[] args) {
+	    MPaySimulator obj = new MPaySimulator();
+		  obj.unbiFormatter87("1699999900000000003120000000000000000000734715241158201712131504522017112720006463795734715241158FKL0033U        40TMB  ANNASALAICHN    COCHENNAITN     INDINR38TMB        161     161100350300067    003MOB017TMBNET|9865928748");
+}
 	public Hashtable<String, String> unbiFormatter87(String message) {
-
+log.info(""+message);
+		System.out.println("Message : "+message);
 			int size = 0;
 			int offset = 4;
 			String pBitmap = null;
@@ -1380,8 +1390,6 @@ public String buildNPCIResponse87(String iobsgMsgType,
         System.out.println("inside buildNPCImethod::");
 		String losgMessage = "";
 		try {
-			iobsgMsgType = iobsgMsgType;
-
 			losgMessage += ISONFSBuilder87(iobsgMsgType, pthtISOBuffer);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1391,60 +1399,37 @@ public String buildNPCIResponse87(String iobsgMsgType,
 
 	public String ISONFSBuilder87(String iobstMsgType,
 			Hashtable<String, String> ISOBuffer) {
-
 		int size = 0;
 		String message = "";
 		String primaryBitMap = "";
 		String secondaryBitMap = "";
 		int i = 0;
-
+		System.out.println("ISO Buff : "+ISOBuffer);
         System.out.println("Rsp bits");
 		for (i = 0; i < 128; i++) {
-
 			if (i <= 63) {
-
 				if (!ISOBuffer.get("P-" + (i + 1)).toString().equals("*")) {
-
 					if (UNBIBITMAP87[i] < 0) {
-
-
-
 						size = ISOBuffer.get("P-" + (i + 1)).toString().length();
-
-						//System.out.println(i+1+"-->"+size);
-
+						System.out.println(i+1+"-->"+size);
 						message += pad1(String.valueOf(size), -1 * UNBIBITMAP87[i]);
-
 						System.out.println(i+1+"-->"+ISOBuffer.get("P-" + (i + 1)).toString());
-
 						message += ISOBuffer.get("P-" + (i + 1)).toString();
-
-
-
 					}
 					else {
-
 						message += ISOBuffer.get("P-" + (i + 1)).toString();
-
 						//System.out.println("test>>");
-							System.out.println(i+1+"-->"+ISOBuffer.get("P-" + (i + 1)).toString());
+						System.out.println(i+1+"-->"+ISOBuffer.get("P-" + (i + 1)).toString());
 					}
-
 					primaryBitMap += "1";
-
 				}
 				else
-
 					primaryBitMap += "0";
 			}
 			else {
-
 				if (!ISOBuffer.get("S-" + (i + 1)).toString().equals("*")) {
-
 					//log.info("Secondary bitmap :: " + (i + 1) + "\t"+ ISOBuffer.get("S-" + (i + 1)));
-
 					if (UNBIBITMAP87[i] < 0) {
-
 						size = ISOBuffer.get("S-" + (i + 1)).toString()
 								.length();
 						message += pad1(String.valueOf(size), -1 * UNBIBITMAP87[i]);
@@ -1452,19 +1437,13 @@ public String buildNPCIResponse87(String iobsgMsgType,
 							System.out.println(i+1+"-->"+ISOBuffer.get("S-" + (i + 1)).toString());
 					}
 					else {
-
 						message += ISOBuffer.get("S-" + (i + 1)).toString();
 							System.out.println(i+1+"-->"+ISOBuffer.get("S-" + (i + 1)).toString());
-
 					}
-
 					secondaryBitMap += "1";
-
 				} else
 					secondaryBitMap += "0";
-
 			}
-
 		}
 
 		if (secondaryBitMap

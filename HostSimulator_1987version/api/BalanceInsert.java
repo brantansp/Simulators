@@ -140,7 +140,8 @@ public class BalanceInsert {
 			statement = null;
 		}
 	}
-	 public Connection getConnection() throws SQLException, ConfigurationException {
+	 
+	public Connection getConnection() throws SQLException, ConfigurationException {
 	
 		
 	String url="";
